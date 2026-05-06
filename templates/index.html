@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__label">Новосибирская область · Станкостроительная отрасль</div>
+  <h1 class="hero__title">Региональный навигатор мер господдержки</h1>
+  <p class="hero__sub">Найдите подходящую программу финансирования, подготовьте заявку и запишитесь к эксперту — за 10 минут</p>
+
+  <div class="cta-group">
+    <a href="/navigator/" class="btn btn--primary">
+      <span class="btn__icon">🎯</span> Подобрать программу
+    </a>
+    <a href="/api/ai/chat/" class="btn btn--secondary">
+      <span class="btn__icon">🤖</span> Спросить AI
+    </a>
+    <a href="/consult/" class="btn btn--accent">
+      <span class="btn__icon">📅</span> Записаться на консультацию
+    </a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats__inner">
+    <div class="stats__item">
+      <div class="stats__num">25+</div>
+      <div class="stats__label">программ в базе</div>
+    </div>
+    <div class="stats__item">
+      <div class="stats__num">6</div>
+      <div class="stats__label">аналитических обзоров</div>
+    </div>
+    <div class="stats__item">
+      <div class="stats__num">12+</div>
+      <div class="stats__label">консультаций</div>
+    </div>
+    <div class="stats__item">
+      <div class="stats__num">3</div>
+      <div class="stats__label">кейса успешных заявок</div>
+    </div>
+  </div>
+</div>
+
+<!-- THREE QUESTIONS -->
+<section class="section">
+  <div class="questions">
+
+    <a href="/navigator/" class="q-card">
+      <div class="q-card__icon">🔍</div>
+      <div class="q-card__title">Что мне подходит?</div>
+      <div class="q-card__text">Анкета-классификатор из 7 шагов: ОКВЭД, размер предприятия, стадия проекта, цель финансирования. Результат — топ программ с процентом соответствия.</div>
+      <div class="q-card__link">Пройти анкету →</div>
+    </a>
+
+    <a href="/library/" class="q-card">
+      <div class="q-card__icon">📋</div>
+      <div class="q-card__title">Как подать заявку?</div>
+      <div class="q-card__text">Аналитические обзоры, кейсы успешных заявок, методическое пособие по типовым ошибкам, шаблоны документов и чек-листы.</div>
+      <div class="q-card__link">В библиотеку →</div>
+    </a>
+
+    <a href="/consult/" class="q-card">
+      <div class="q-card__icon">👤</div>
+      <div class="q-card__title">К кому обратиться?</div>
+      <div class="q-card__text">Консультация эксперта. Онлайн или очно. Запись через личный кабинет, подтверждение в VK Max.</div>
+      <div class="q-card__link">Записаться →</div>
+    </a>
+
+  </div>
+</section>
+
+{% endblock %}

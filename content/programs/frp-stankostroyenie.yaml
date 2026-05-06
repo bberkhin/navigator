@@ -1,0 +1,25 @@
+title: "ФРП · Станкостроение"
+slug: frp-stankostroyenie
+admin_org: "Фонд развития промышленности"
+legal_basis: "Постановление Правительства РФ № 1706"
+support_form: loan
+min_amount_mln: 50
+max_amount_mln: 500
+rate_percent: 5
+term: "до 7 лет"
+okveds:
+  - "28.41"
+  - "28.49"
+  - "25.73"
+project_stage: production
+enterprise_profile: "МСП и крупные, наличие НИОКР необязательно"
+relevance: high
+verified_at: 2025-03-01
+verified_by: "Иванов А.П."
+deadline_at: null
+official_url: "https://frprf.ru/"
+typical_errors:
+  - "Некорректный ОКВЭД в ГИСП — проверьте, что 28.41 стоит основным"
+  - "ТЭО написано на коленке за ночь до дедлайна"
+  - "В разделе «локализация» указали, что скрепки отечественные"
+center_notes: "Лучшая программа для серийников. Если вам отказали — скорее всего вопрос в ГИСП. Звоните, разберёмся."

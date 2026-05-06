@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}{{ program.title }}{% endblock %}
+
+{% block content %}
+<div class="detail-page">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <div class="breadcrumb__inner">
+      <a href="/">Главная</a> &rsaquo;
+      <a href="/catalog/">Каталог</a> &rsaquo;
+      <span>{{ program.title }}</span>
+    </div>
+  </div>
+
+  <div class="detail-layout">
+
+    <!-- MAIN CONTENT -->
+    <div class="detail-main">
+
+      <div class="detail-header">
+        <div class="detail-header__tags">
+          <span class="tag tag--form">{{ program.support_form_label }}</span>
+          <span class="tag tag--stage">{{ program.stage_label }}</span>
+          <span class="tag tag--relevance {{ program.relevance_css }}">{{ program.relevance_label }} релевантность</span>
+        </div>
+        <h1 class="detail-header__title">{{ program.title }}</h1>
+        <div class="detail-header__org">{{ program.admin_org }}</div>
+      </div>
+
+      <!-- PARAMS TABLE -->
+      <div class="detail-section">
+        <h2 class="detail-section__title">Параметры программы</h2>
+        <table class="params-table">
+          {% if program.min_amount_mln or program.max_amount_mln %}
+          <tr>
+            <td>Объём поддержки</td>
+            <td>
+              {% if program.min_amount_mln %}от {{ program.min_amount_mln }} млн ₽ {% endif %}
+              {% if program.max_amount_mln %}до {{ program.max_amount_mln }} млн ₽{% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% if program.rate_percent %}
+          <tr>
+            <td>Процентная ставка</td>
+            <td>{{ program.rate_percent }}% годовых</td>
+          </tr>
+          {% endif %}
+          {% if program.term %}
+          <tr>
+            <td>Срок</td>
+            <td>{{ program.term }}</td>
+          </tr>
+          {% endif %}
+          {% if program.enterprise_profile %}
+          <tr>
+            <td>Профиль предприятия</td>
+            <td>{{ program.enterprise_profile }}</td>
+          </tr>
+          {% endif %}
+          {% if program.legal_basis %}
+          <tr>
+            <td>Нормативная основа</td>
+            <td>{{ program.legal_basis }}</td>
+          </tr>
+          {% endif %}
+          {% if program.deadline_at %}
+          <tr>
+            <td>Дедлайн подачи</td>
+            <td>{{ program.deadline_at }}</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td>Верифицировано</td>
+            <td>{{ program.verified_at }} · {{ program.verified_by }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- OKVEDs -->
+      {% if program.okveds %}
+      <div class="detail-section">
+        <h2 class="detail-section__title">Допустимые ОКВЭД</h2>
+        <div class="okveds">
+          {% for code in program.okveds %}
+            <span class="okveds__code">{{ code }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- TYPICAL ERRORS -->
+      {% if program.typical_errors %}
+      <div class="detail-section">
+        <h2 class="detail-section__title">⚠ Типовые ошибки заявителей</h2>
+        <ul class="error-list">
+          {% for err in program.typical_errors %}
+            <li class="error-list__item">{{ err }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- CENTER NOTES -->
+      {% if program.center_notes %}
+      <div class="center-note">
+        <div class="center-note__label">💬 Рекомендации Центра НТР станкостроения</div>
+        <div class="center-note__text">{{ program.center_notes }}</div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="detail-sidebar">
+      {% if program.official_url %}
+      <a href="{{ program.official_url }}" target="_blank" rel="noopener" class="btn btn-block btn--blue">
+        Официальный сайт программы ↗
+      </a>
+      {% endif %}
+
+      <a href="/navigator/" class="btn btn-block btn--outline">
+        🎯 Проверить подходит ли мне
+      </a>
+
+      <a href="/consult/" class="btn btn-block btn--accent">
+        📅 Записаться на консультацию
+      </a>
+
+      <div class="sidebar-box">
+        <div class="sidebar-box__title">Нужна экспертиза заявки?</div>
+        <div class="sidebar-box__text">Эксперт Центра разберёт вашу ситуацию и проверит документы до официальной подачи.</div>
+        <a href="/consult/" class="sidebar-box__link">Подать заявку на разбор →</a>
+      </div>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}

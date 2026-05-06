@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Навигатор мер господдержки{% endblock %} · НГТУ</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="header">
+  <div class="header__inner">
+
+    <a href="{% url 'home' %}" class="header__logo">
+      <span class="header__logo-title">Навигатор господдержки</span>
+      <span class="header__logo-sub">Центр НТР станкостроения · НГТУ</span>
+    </a>
+
+    <nav class="nav">
+      <a href="{% url 'home' %}"
+         class="nav__link {% if request.resolver_match.url_name == 'home' %}nav__link--active{% endif %}">
+        Главная
+      </a>
+      <a href="/catalog/"
+         class="nav__link {% if 'catalog' in request.path %}nav__link--active{% endif %}">
+        Каталог программ
+      </a>
+      <a href="/navigator/"
+         class="nav__link {% if 'navigator' in request.path %}nav__link--active{% endif %}">
+        Навигатор
+      </a>
+      <a href="/library/"
+         class="nav__link {% if 'library' in request.path %}nav__link--active{% endif %}">
+        Библиотека
+      </a>
+      <a href="/consult/"
+         class="nav__link {% if 'consult' in request.path %}nav__link--active{% endif %}">
+        Консультации
+      </a>
+      <a href="/map/"
+         class="nav__link {% if 'map' in request.path %}nav__link--active{% endif %}">
+        Карта
+      </a>
+    </nav>
+
+    <div class="header__auth">
+      {% if user.is_authenticated %}
+        <a href="/account/" class="nav__link">Кабинет</a>
+        <a href="/accounts/logout/" class="btn-vk">Выйти</a>
+      {% else %}
+        <a href="/accounts/vk/login/" class="btn-vk">
+          <span>VK</span> Войти
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+</header>
+
+{% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="message message--{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <p>© 2025 Центр НТР станкостроения · НГТУ &nbsp;·&nbsp;
+     <a href="/about/">О Центре</a> &nbsp;·&nbsp;
+     <a href="/privacy/">Политика персональных данных</a>
+  </p>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог программ{% endblock %}
+
+{% block content %}
+<div class="catalog-page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-header__inner">
+      <h1 class="page-header__title">Каталог мер господдержки</h1>
+      <p class="page-header__sub">{{ programs|length }} программ{{ programs|length|pluralize:",ы,а" }} · Новосибирская область и федеральный уровень</p>
+    </div>
+  </div>
+
+  <div class="catalog-layout">
+
+    <!-- FILTERS -->
+    <aside class="filters">
+      <div class="filters__title">Фильтры</div>
+      <form method="get" action="">
+
+        <div class="filter-group">
+          <div class="filter-group__label">Форма поддержки</div>
+          <label class="filter-option">
+            <input type="radio" name="type" value="" {% if not support_filter %}checked{% endif %}>
+            <span>Все</span>
+          </label>
+          {% for key, label in support_form_labels.items %}
+          <label class="filter-option">
+            <input type="radio" name="type" value="{{ key }}" {% if support_filter == key %}checked{% endif %}>
+            <span>{{ label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group__label">Стадия проекта</div>
+          <label class="filter-option">
+            <input type="radio" name="stage" value="" {% if not stage_filter %}checked{% endif %}>
+            <span>Все</span>
+          </label>
+          {% for key, label in stage_labels.items %}
+          <label class="filter-option">
+            <input type="radio" name="stage" value="{{ key }}" {% if stage_filter == key %}checked{% endif %}>
+            <span>{{ label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn-filter">Применить</button>
+        {% if support_filter or stage_filter %}
+          <a href="/catalog/" class="btn-filter-reset">Сбросить</a>
+        {% endif %}
+      </form>
+    </aside>
+
+    <!-- PROGRAMS LIST -->
+    <div class="programs-list">
+      {% if not programs %}
+        <div class="empty-state">
+          <div class="empty-state__icon">🔍</div>
+          <div class="empty-state__text">По выбранным фильтрам ничего не найдено.</div>
+          <a href="/catalog/" class="btn-filter-reset">Сбросить фильтры</a>
+        </div>
+      {% endif %}
+
+      {% for p in programs %}
+      <a href="/catalog/{{ p.slug }}/" class="program-card">
+        <div class="program-card__head">
+          <div class="program-card__title">{{ p.title }}</div>
+          <div class="program-card__org">{{ p.admin_org }}</div>
+        </div>
+
+        <div class="program-card__tags">
+          <span class="tag tag--form">{{ p.support_form_label }}</span>
+          <span class="tag tag--stage">{{ p.stage_label }}</span>
+          <span class="tag tag--relevance {{ p.relevance_css }}">{{ p.relevance_label }} релевантность</span>
+        </div>
+
+        <div class="program-card__amounts">
+          {% if p.max_amount_mln %}
+            <span>до {{ p.max_amount_mln }} млн ₽</span>
+          {% endif %}
+          {% if p.rate_percent %}
+            <span>· {{ p.rate_percent }}% годовых</span>
+          {% endif %}
+          {% if p.term %}
+            <span>· {{ p.term }}</span>
+          {% endif %}
+        </div>
+
+        {% if p.center_notes %}
+        <div class="program-card__note">💬 {{ p.center_notes|truncatechars:120 }}</div>
+        {% endif %}
+
+        <div class="program-card__arrow">Подробнее →</div>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
