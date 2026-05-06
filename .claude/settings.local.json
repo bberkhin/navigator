@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Projects/НГТУ/code/navigator -name \"*.py\" ! -path \"*/venv/*\" -exec grep -l \"allauth\\\\|langchain\\\\|gigachat\\\\|psycopg2\\\\|pgvector\\\\|gunicorn\\\\|dotenv\" {} \\\\;)",
+      "Bash(grep -E \"\\\\.\\(env|txt\\)$|requirements\")"
+    ]
+  }
+}
