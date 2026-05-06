@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Библиотека · {{ title }}{% endblock %}
+
+{% block content %}
+<div class="library-page">
+
+  <div class="page-header">
+    <div class="page-header__inner">
+      <h1 class="page-header__title">Библиотека</h1>
+      <p class="page-header__sub">Методические материалы · Центр НТР станкостроения НГТУ</p>
+    </div>
+  </div>
+
+  <div class="library-layout library-layout--full">
+
+    <article class="library-content md-body">
+      {{ content|safe }}
+    </article>
+
+  </div>
+</div>
+{% endblock %}

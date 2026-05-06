@@ -10,5 +10,6 @@ def home(request):
 urlpatterns = [
     path('', home, name='home'),
     path('catalog/', include('apps.catalog.urls')),
+    path('library/', include('apps.library.urls')),
     path('admin/', admin.site.urls),
 ]
