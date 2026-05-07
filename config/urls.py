@@ -11,5 +11,8 @@ urlpatterns = [
     path('', home, name='home'),
     path('catalog/', include('apps.catalog.urls')),
     path('library/', include('apps.library.urls')),
+    path('navigator/', include('apps.navigator.urls')),
+    path('consult/', include('apps.consult.urls')),
+    path('map/', include('apps.map.urls')),
     path('admin/', admin.site.urls),
 ]

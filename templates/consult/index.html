@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Консультация{% endblock %}
+
+{% block content %}
+<div class="consult-page">
+
+  <div class="page-header">
+    <div class="page-header__inner">
+      <h1 class="page-header__title">Записаться на консультацию</h1>
+      <p class="page-header__sub">Эксперт Центра НТР станкостроения НГТУ разберёт вашу ситуацию и поможет с выбором программы</p>
+    </div>
+  </div>
+
+  <div class="consult-wrap">
+
+    {% if submitted %}
+      <div class="consult-success">
+        <div class="consult-success__icon">✅</div>
+        <div class="consult-success__title">Заявка принята</div>
+        <div class="consult-success__text">
+          Это заглушка — реальная обработка пока не реализована.<br>
+          В финальной версии эксперт свяжется с вами в течение рабочего дня.
+        </div>
+        <a href="/consult/" class="btn btn--outline-blue">Отправить ещё одну заявку</a>
+      </div>
+
+    {% else %}
+      <div class="consult-stub-notice">
+        🚧 Форма в разработке — данные принимаются, но не обрабатываются и никуда не отправляются.
+      </div>
+
+      <div class="consult-layout">
+
+        <form class="consult-form" method="post" action="/consult/">
+          {% csrf_token %}
+
+          <div class="consult-field">
+            <label class="consult-label" for="phone">Телефон <span class="consult-required">*</span></label>
+            <input class="consult-input" type="tel" id="phone" name="phone"
+                   placeholder="+7 (___) ___-__-__" required>
+          </div>
+
+          <div class="consult-field">
+            <label class="consult-label" for="name">Имя и организация</label>
+            <input class="consult-input" type="text" id="name" name="name"
+                   placeholder="Иванов Иван · ООО «Станкомаш»">
+          </div>
+
+          <div class="consult-field">
+            <label class="consult-label" for="question">Ваш вопрос <span class="consult-required">*</span></label>
+            <textarea class="consult-input consult-textarea" id="question" name="question"
+                      placeholder="Опишите ситуацию: чем занимается предприятие, что за проект, какую программу рассматриваете или что хотите уточнить..."
+                      rows="5" required></textarea>
+          </div>
+
+          <div class="consult-field">
+            <label class="consult-label">Формат консультации</label>
+            <div class="consult-radio-group">
+              <label class="consult-radio">
+                <input type="radio" name="format" value="online" checked> Онлайн (VK Звонки / Zoom)
+              </label>
+              <label class="consult-radio">
+                <input type="radio" name="format" value="offline"> Очно (НГТУ, Новосибирск)
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--primary-blue consult-submit">
+            📅 Отправить заявку
+          </button>
+
+        </form>
+
+        <aside class="consult-info">
+          <div class="consult-info__box">
+            <div class="consult-info__title">Что происходит после заявки</div>
+            <ol class="consult-info__steps">
+              <li>Эксперт свяжется по телефону в течение рабочего дня</li>
+              <li>Согласуете удобное время и формат</li>
+              <li>Получите подтверждение с деталями встречи</li>
+            </ol>
+          </div>
+          <div class="consult-info__box">
+            <div class="consult-info__title">О чём можно проконсультироваться</div>
+            <ul class="consult-info__list">
+              <li>Подбор подходящей программы господдержки</li>
+              <li>Проверка заявки перед подачей</li>
+              <li>Разбор типовых ошибок</li>
+              <li>Помощь с ГИСП и документами</li>
+            </ul>
+          </div>
+          <div class="consult-info__contact">
+            <div class="consult-info__title">Прямой контакт</div>
+            <div class="consult-info__phone">+7 (383) 000-00-00</div>
+            <div class="consult-info__hours">Пн–Пт, 9:00–18:00</div>
+          </div>
+        </aside>
+
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
+{% endblock %}

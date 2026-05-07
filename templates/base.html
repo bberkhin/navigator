@@ -50,14 +50,33 @@
         <a href="/account/" class="nav__link">Кабинет</a>
         <a href="/accounts/logout/" class="btn-vk">Выйти</a>
       {% else %}
-        <a href="/accounts/vk/login/" class="btn-vk">
-          Войти
-        </a>
+        <a href="/accounts/vk/login/" class="btn-vk">Войти</a>
       {% endif %}
     </div>
 
+    <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+
   </div>
 </header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="{% url 'home' %}" class="mobile-menu__link">Главная</a>
+  <a href="/catalog/" class="mobile-menu__link">Каталог программ</a>
+  <a href="/navigator/" class="mobile-menu__link">Навигатор</a>
+  <a href="/library/" class="mobile-menu__link">План</a>
+  <a href="/consult/" class="mobile-menu__link">Консультации</a>
+  <a href="/map/" class="mobile-menu__link">Карта</a>
+  <div class="mobile-menu__auth">
+    {% if user.is_authenticated %}
+      <a href="/account/" class="mobile-menu__link">Личный кабинет</a>
+      <a href="/accounts/logout/" class="mobile-menu__link">Выйти</a>
+    {% else %}
+      <a href="/accounts/vk/login/" class="btn-vk">Войти</a>
+    {% endif %}
+  </div>
+</div>
 
 {% if messages %}
   <div class="messages">
@@ -79,5 +98,13 @@
 </footer>
 
 {% block extra_js %}{% endblock %}
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('burger');
+  menu.classList.toggle('mobile-menu--open');
+  burger.classList.toggle('burger--open');
+}
+</script>
 </body>
 </html>

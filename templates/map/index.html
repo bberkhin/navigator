@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Карта экосистемы{% endblock %}
+
+{% block extra_css %}
+<style>
+  .map-page { display: flex; flex-direction: column; height: calc(100vh - 64px); }
+
+  .map-header {
+    background: var(--blue);
+    color: #fff;
+    padding: 16px 24px;
+    flex-shrink: 0;
+  }
+  .map-header h1 { font-size: 20px; font-weight: 800; }
+  .map-header p { font-size: 13px; opacity: .8; margin-top: 2px; }
+
+  .map-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── LEFT PANEL ── */
+  .map-panel {
+    width: 320px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid var(--gray-100);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 2px 0 8px rgba(0,0,0,.06);
+    z-index: 10;
+  }
+
+  .map-search {
+    padding: 16px;
+    border-bottom: 1px solid var(--gray-100);
+    flex-shrink: 0;
+  }
+  .map-search__title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--gray-600);
+    margin-bottom: 10px;
+  }
+  .map-search__row { display: flex; gap: 8px; }
+  .map-search__input {
+    flex: 1;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .map-search__input:focus { border-color: var(--blue); }
+  .map-search__btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .map-search__btn:hover { background: var(--blue-dark); }
+
+  .map-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+
+  .map-results__empty {
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 13px;
+  }
+  .map-results__empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+  .map-results__count {
+    padding: 4px 16px 10px;
+    font-size: 12px;
+    color: var(--gray-600);
+    font-weight: 600;
+  }
+
+  .result-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background .12s, border-color .12s;
+  }
+  .result-item:hover, .result-item--active {
+    background: var(--blue-light);
+    border-left-color: var(--blue);
+  }
+  .result-item__name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .result-item__addr { font-size: 12px; color: var(--gray-600); }
+  .result-item__type {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    margin-top: 4px;
+  }
+
+  .map-loading {
+    padding: 20px 16px;
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 13px;
+    display: none;
+  }
+
+  /* ── MAP CONTAINER ── */
+  #map-container { flex: 1; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="map-page">
+
+  <div class="map-header">
+    <h1>Карта отраслевой экосистемы</h1>
+    <p>Предприятия, институты поддержки, наука и инфраструктура · Новосибирская область</p>
+  </div>
+
+  <div class="map-body">
+
+    <div class="map-panel">
+
+      <div class="map-search">
+        <div class="map-search__title">Поиск по карте</div>
+        <div class="map-search__row">
+          <input class="map-search__input" id="search-input"
+                 type="text" placeholder="Организация, адрес..."
+                 onkeydown="if(event.key==='Enter') doSearch()">
+          <button class="map-search__btn" onclick="doSearch()">Найти</button>
+        </div>
+      </div>
+
+      <div class="map-loading" id="map-loading">⏳ Поиск...</div>
+
+      <div class="map-results" id="map-results">
+        <div class="map-results__empty">
+          <div class="map-results__empty-icon">🗺️</div>
+          Введите запрос для поиска<br>по организациям и адресам
+        </div>
+      </div>
+
+    </div>
+
+    <div id="map-container"></div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://mapgl.2gis.com/api/js/v1"></script>
+<script>
+const API_KEY = '{{ twogis_key }}';
+const NSK_CENTER = [82.9346, 54.9885];
+
+let map, markers = [];
+
+// Инициализация карты
+const map2gis = new mapgl.Map('map-container', {
+  center: NSK_CENTER,
+  zoom: 12,
+  key: API_KEY,
+});
+
+// Прямой запрос к 2ГИС Catalog API
+async function doSearch() {
+  const query = document.getElementById('search-input').value.trim();
+  if (!query) return;
+
+  document.getElementById('map-loading').style.display = 'block';
+  document.getElementById('map-results').innerHTML = '';
+
+  clearMarkers();
+
+  try {
+    const url = `https://catalog.api.2gis.com/3.0/items?q=${encodeURIComponent(query)}&point=${NSK_CENTER[0]},${NSK_CENTER[1]}&radius=50000&fields=items.point,items.address_name,items.rubrics&key=${API_KEY}&page_size=10&locale=ru_RU`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    renderResults(data.result?.items || []);
+  } catch(e) {
+    document.getElementById('map-results').innerHTML =
+      '<div class="map-results__empty">⚠ Ошибка запроса</div>';
+  }
+
+  document.getElementById('map-loading').style.display = 'none';
+}
+
+function renderResults(items) {
+  const container = document.getElementById('map-results');
+
+  if (!items.length) {
+    container.innerHTML = '<div class="map-results__empty"><div class="map-results__empty-icon">🔍</div>Ничего не найдено</div>';
+    return;
+  }
+
+  container.innerHTML = `<div class="map-results__count">Найдено: ${items.length}</div>`;
+
+  items.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'result-item';
+    div.dataset.index = i;
+
+    const rubric = item.rubrics?.[0]?.name || '';
+    div.innerHTML = `
+      <div class="result-item__name">${item.name}</div>
+      <div class="result-item__addr">${item.address_name || ''}</div>
+      ${rubric ? `<span class="result-item__type">${rubric}</span>` : ''}
+    `;
+
+    if (item.point) {
+      const coords = [item.point.lon, item.point.lat];
+
+      // Маркер на карте
+      const marker = new mapgl.Marker(map2gis, { coordinates: coords });
+      markers.push(marker);
+
+      div.addEventListener('click', () => {
+        map2gis.setCenter(coords);
+        map2gis.setZoom(16);
+        document.querySelectorAll('.result-item').forEach(el => el.classList.remove('result-item--active'));
+        div.classList.add('result-item--active');
+      });
+    }
+
+    container.appendChild(div);
+  });
+
+  // Подогнать карту под все результаты с координатами
+  const pts = items.filter(i => i.point).map(i => [i.point.lon, i.point.lat]);
+  if (pts.length) {
+    map2gis.setCenter([
+      pts.reduce((s, p) => s + p[0], 0) / pts.length,
+      pts.reduce((s, p) => s + p[1], 0) / pts.length,
+    ]);
+    map2gis.setZoom(13);
+  }
+}
+
+function clearMarkers() {
+  markers.forEach(m => m.destroy());
+  markers = [];
+}
+</script>
+{% endblock %}

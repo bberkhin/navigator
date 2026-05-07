@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}AI чат · Навигатор{% endblock %}
+
+{% block content %}
+<div class="nav-page">
+
+  <div class="page-header">
+    <div class="page-header__inner">
+      <a href="/navigator/" class="page-header__back">← Навигатор</a>
+      <h1 class="page-header__title">AI чат</h1>
+      <p class="page-header__sub">Режим естественного диалога · GigaChat RAG</p>
+    </div>
+  </div>
+
+  <div class="chat-wrap">
+
+    <div class="chat-window">
+      <div class="chat-messages" id="chat-messages">
+
+        <div class="chat-msg chat-msg--bot">
+          <div class="chat-msg__avatar">🤖</div>
+          <div class="chat-msg__bubble">
+            Здравствуйте! Я AI-консультант Центра НТР станкостроения НГТУ.
+            Опишите ваш проект или задайте вопрос — подберу подходящие программы господдержки.
+            <div class="chat-msg__disclaimer">
+              ⚠ Ответы формируются только на основе верифицированной базы программ.
+              Для детального разбора — <a href="/consult/">запишитесь к эксперту</a>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="chat-stub-notice">
+        🚧 AI-интеграция в разработке. Здесь будет подключён GigaChat RAG.
+      </div>
+
+      <form class="chat-form" id="chat-form" onsubmit="return false;">
+        <textarea
+          class="chat-form__input"
+          id="chat-input"
+          placeholder="Опишите ваш проект: ОКВЭД, стадию, размер предприятия, цель финансирования..."
+          rows="2"
+        ></textarea>
+        <button type="submit" class="chat-form__btn" onclick="sendStub()">Отправить</button>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function sendStub() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const messages = document.getElementById('chat-messages');
+
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg chat-msg--user';
+  userMsg.innerHTML = `<div class="chat-msg__bubble">${text}</div>`;
+  messages.appendChild(userMsg);
+
+  input.value = '';
+
+  setTimeout(() => {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg chat-msg--bot';
+    botMsg.innerHTML = `
+      <div class="chat-msg__avatar">🤖</div>
+      <div class="chat-msg__bubble">
+        Функция в разработке — GigaChat RAG ещё не подключён.
+        Пока воспользуйтесь <a href="/navigator/anketa/">анкетой</a>
+        или <a href="/consult/">запишитесь на консультацию</a>.
+      </div>`;
+    messages.appendChild(botMsg);
+    messages.scrollTop = messages.scrollHeight;
+  }, 600);
+
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Навигатор{% endblock %}
+
+{% block content %}
+<div class="nav-page">
+
+  <div class="page-header">
+    <div class="page-header__inner">
+      <h1 class="page-header__title">Навигатор мер господдержки</h1>
+      <p class="page-header__sub">Выберите режим подбора программ</p>
+    </div>
+  </div>
+
+  <div class="nav-choice">
+
+    <a href="/navigator/ai/" class="nav-choice__card">
+      <div class="nav-choice__icon">🤖</div>
+      <div class="nav-choice__label">AI чат</div>
+      <div class="nav-choice__mode">Режим естественного диалога</div>
+      <p class="nav-choice__desc">
+        Опишите ваш проект своими словами — AI-консультант задаст уточняющие вопросы
+        и подберёт подходящие программы в ходе свободного диалога.
+        Отвечает только на основе верифицированной базы программ.
+      </p>
+      <div class="nav-choice__cta">Начать диалог →</div>
+    </a>
+
+    <a href="/navigator/anketa/" class="nav-choice__card">
+      <div class="nav-choice__icon">📋</div>
+      <div class="nav-choice__label">Анкета</div>
+      <div class="nav-choice__mode">Детерминированный алгоритм подбора</div>
+      <p class="nav-choice__desc">
+        Многостраничная анкета с декомпозицией профиля предприятия и логикой ветвления
+        (decision tree). Результат — ранжированный список программ с процентом
+        соответствия. Работает без интернета и без AI.
+      </p>
+      <div class="nav-choice__cta">Заполнить анкету →</div>
+    </a>
+
+  </div>
+
+</div>
+{% endblock %}

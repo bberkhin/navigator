@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Анкета · Навигатор{% endblock %}
+
+{% block content %}
+<div class="nav-page">
+
+  <div class="page-header">
+    <div class="page-header__inner">
+      <a href="/navigator/" class="page-header__back">← Навигатор</a>
+      <h1 class="page-header__title">Анкета подбора программ</h1>
+      <p class="page-header__sub">Детерминированный алгоритм · decision tree · 7 шагов</p>
+    </div>
+  </div>
+
+  <div class="anketa-wrap">
+
+    <div class="anketa-stub-notice">
+      🚧 Алгоритм подбора в разработке. Форма принимает данные, но результат пока не вычисляется.
+    </div>
+
+    <form class="anketa-form" onsubmit="return false;">
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 1</div>
+        <div class="anketa-step__title">ОКВЭД предприятия</div>
+        <input type="text" class="anketa-input" placeholder="Например: 28.41, 28.49, 25.73">
+        <div class="anketa-hint">Укажите основной и дополнительные ОКВЭД через запятую</div>
+      </div>
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 2</div>
+        <div class="anketa-step__title">Размер предприятия и выручка</div>
+        <div class="anketa-radio-group">
+          <label class="anketa-radio">
+            <input type="radio" name="size" value="micro"> Микро (до 120 млн ₽/год)
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="size" value="small"> Малое (до 800 млн ₽/год)
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="size" value="medium"> Среднее (до 2 млрд ₽/год)
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="size" value="large"> Крупное (свыше 2 млрд ₽/год)
+          </label>
+        </div>
+      </div>
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 3</div>
+        <div class="anketa-step__title">Стадия проекта</div>
+        <div class="anketa-radio-group">
+          <label class="anketa-radio">
+            <input type="radio" name="stage" value="rd"> НИОКР / R&D
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="stage" value="pilot"> Опытное производство / пилот
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="stage" value="production"> Серийное производство
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="stage" value="modernization"> Модернизация
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="stage" value="scale"> Масштабирование
+          </label>
+        </div>
+      </div>
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 4</div>
+        <div class="anketa-step__title">Цель финансирования</div>
+        <div class="anketa-checkbox-group">
+          <label class="anketa-checkbox">
+            <input type="checkbox" name="goal" value="equipment"> Приобретение оборудования
+          </label>
+          <label class="anketa-checkbox">
+            <input type="checkbox" name="goal" value="rd_costs"> Финансирование НИОКР
+          </label>
+          <label class="anketa-checkbox">
+            <input type="checkbox" name="goal" value="localization"> Локализация / импортозамещение
+          </label>
+          <label class="anketa-checkbox">
+            <input type="checkbox" name="goal" value="export"> Выход на экспорт
+          </label>
+          <label class="anketa-checkbox">
+            <input type="checkbox" name="goal" value="working_capital"> Пополнение оборотных средств
+          </label>
+        </div>
+      </div>
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 5</div>
+        <div class="anketa-step__title">Наличие НИОКР в проекте</div>
+        <div class="anketa-radio-group">
+          <label class="anketa-radio">
+            <input type="radio" name="has_rd" value="yes"> Да, есть НИОКР-составляющая
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="has_rd" value="no"> Нет, чисто производственный проект
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="has_rd" value="planned"> Планируется
+          </label>
+        </div>
+      </div>
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 6</div>
+        <div class="anketa-step__title">Локализация производства</div>
+        <div class="anketa-radio-group">
+          <label class="anketa-radio">
+            <input type="radio" name="localization" value="high"> Высокая (70%+ российских комплектующих)
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="localization" value="medium"> Средняя (30–70%)
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="localization" value="low"> Низкая (менее 30%)
+          </label>
+        </div>
+      </div>
+
+      <div class="anketa-step">
+        <div class="anketa-step__num">Шаг 7</div>
+        <div class="anketa-step__title">Необходимая сумма финансирования</div>
+        <div class="anketa-radio-group">
+          <label class="anketa-radio">
+            <input type="radio" name="amount" value="small"> до 10 млн ₽
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="amount" value="medium"> 10–100 млн ₽
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="amount" value="large"> 100–500 млн ₽
+          </label>
+          <label class="anketa-radio">
+            <input type="radio" name="amount" value="xlarge"> свыше 500 млн ₽
+          </label>
+        </div>
+      </div>
+
+      <div class="anketa-actions">
+        <button type="submit" class="btn btn--primary anketa-submit" onclick="showStubResult()">
+          🎯 Подобрать программы
+        </button>
+      </div>
+
+      <div class="anketa-result" id="anketa-result" style="display:none;">
+        <div class="anketa-result__title">🚧 Алгоритм в разработке</div>
+        <div class="anketa-result__text">
+          Данные приняты. Логика сопоставления с программами будет реализована на следующем этапе.
+          Пока воспользуйтесь <a href="/catalog/">каталогом программ</a>
+          или <a href="/consult/">запишитесь на консультацию</a>.
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showStubResult() {
+  document.getElementById('anketa-result').style.display = 'block';
+  document.getElementById('anketa-result').scrollIntoView({behavior: 'smooth'});
+}
+</script>
+{% endblock %}
