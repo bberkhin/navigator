@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 
-TWOGIS_KEY = getattr(settings, 'TWOGIS_API_KEY', '55ddd2c7-9163-437f-b597-82db36fac025')
+TWOGIS_KEY = settings.TWOGIS_API_KEY
 
 
 def map_index(request):

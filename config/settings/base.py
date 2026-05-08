@@ -1,13 +1,16 @@
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me-in-production')
+# Загрузка .env если есть python-dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env')
+except ImportError:
+    pass
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -56,13 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -77,5 +73,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Ключи внешних сервисов — берутся из .env
+TWOGIS_API_KEY = os.environ.get('TWOGIS_API_KEY', '')
+GIGACHAT_CLIENT_ID = os.environ.get('GIGACHAT_CLIENT_ID', '')
+GIGACHAT_AUTH_KEY = os.environ.get('GIGACHAT_AUTH_KEY', '')
+GIGACHAT_SCOPE = os.environ.get('GIGACHAT_SCOPE', 'GIGACHAT_API_PERS')
+VK_CLIENT_ID = os.environ.get('VK_CLIENT_ID', '')
+VK_CLIENT_SECRET = os.environ.get('VK_CLIENT_SECRET', '')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+GIT_AUTHOR_NAME = os.environ.get('GIT_AUTHOR_NAME', '')
+GIT_AUTHOR_EMAIL = os.environ.get('GIT_AUTHOR_EMAIL', '')

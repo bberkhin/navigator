@@ -1,18 +1,19 @@
 # ── Используется сейчас ──────────────────────────────────────────
 Django==6.0.5
 asgiref==3.11.1
-sqlparse==0.5.3
+sqlparse==0.5.5
 tzdata==2026.2
 PyYAML==6.0.3
-Markdown==3.8
-requests==2.32.3
+Markdown==3.10.2
+requests==2.33.1
+python-dotenv==1.2.2
 
-# ── Авторизация (VK ID) — apps/accounts ─────────────────────────
+# ── Авторизация (VK или Yandex ID) — apps/accounts ───────────────
 # django-allauth
 
 # ── AI / RAG — apps/ai ──────────────────────────────────────────
+gigachat==0.2.1
 # langchain
-# gigachat
 
 # ── База данных PostgreSQL + векторный поиск ─────────────────────
 # psycopg2-binary
@@ -20,6 +21,3 @@ requests==2.32.3
 
 # ── Деплой ──────────────────────────────────────────────────────
 # gunicorn
-
-# ── Окружение (.env) ─────────────────────────────────────────────
-# python-dotenv

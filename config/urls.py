@@ -14,5 +14,6 @@ urlpatterns = [
     path('navigator/', include('apps.navigator.urls')),
     path('consult/', include('apps.consult.urls')),
     path('map/', include('apps.map.urls')),
+    path('api/ai/', include('apps.ai.urls')),
     path('admin/', admin.site.urls),
 ]

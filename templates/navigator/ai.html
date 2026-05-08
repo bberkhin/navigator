@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}AI чат · Навигатор{% endblock %}
 
@@ -9,44 +10,43 @@
     <div class="page-header__inner">
       <a href="/navigator/" class="page-header__back">← Навигатор</a>
       <h1 class="page-header__title">AI чат</h1>
-      <p class="page-header__sub">Режим естественного диалога · GigaChat RAG</p>
+      <p class="page-header__sub">Режим естественного диалога · GigaChat</p>
     </div>
   </div>
 
   <div class="chat-wrap">
-
     <div class="chat-window">
-      <div class="chat-messages" id="chat-messages">
 
+      <div class="chat-toolbar">
+        <span class="chat-toolbar__status" id="chat-status">🟢 GigaChat подключён</span>
+        <button class="chat-toolbar__clear" onclick="clearHistory()">Очистить диалог</button>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
         <div class="chat-msg chat-msg--bot">
           <div class="chat-msg__avatar">🤖</div>
           <div class="chat-msg__bubble">
             Здравствуйте! Я AI-консультант Центра НТР станкостроения НГТУ.
-            Опишите ваш проект или задайте вопрос — подберу подходящие программы господдержки.
+            Опишите ваш проект или задайте вопрос — помогу подобрать подходящие программы господдержки.
             <div class="chat-msg__disclaimer">
-              ⚠ Ответы формируются только на основе верифицированной базы программ.
+              ⚠ Ответы носят консультационный характер.
               Для детального разбора — <a href="/consult/">запишитесь к эксперту</a>.
             </div>
           </div>
         </div>
-
       </div>
 
-      <div class="chat-stub-notice">
-        🚧 AI-интеграция в разработке. Здесь будет подключён GigaChat RAG.
-      </div>
-
-      <form class="chat-form" id="chat-form" onsubmit="return false;">
+      <form class="chat-form" id="chat-form" onsubmit="sendMessage(); return false;">
         <textarea
           class="chat-form__input"
           id="chat-input"
           placeholder="Опишите ваш проект: ОКВЭД, стадию, размер предприятия, цель финансирования..."
           rows="2"
         ></textarea>
-        <button type="submit" class="chat-form__btn" onclick="sendStub()">Отправить</button>
+        <button type="submit" class="chat-form__btn" id="chat-send-btn">Отправить</button>
       </form>
-    </div>
 
+    </div>
   </div>
 
 </div>
@@ -54,35 +54,132 @@
 
 {% block extra_js %}
 <script>
-function sendStub() {
+const CSRF = '{{ csrf_token }}';
+
+async function sendMessage() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text) return;
 
-  const messages = document.getElementById('chat-messages');
-
-  const userMsg = document.createElement('div');
-  userMsg.className = 'chat-msg chat-msg--user';
-  userMsg.innerHTML = `<div class="chat-msg__bubble">${text}</div>`;
-  messages.appendChild(userMsg);
-
+  addMessage('user', text);
   input.value = '';
+  setLoading(true);
 
-  setTimeout(() => {
-    const botMsg = document.createElement('div');
-    botMsg.className = 'chat-msg chat-msg--bot';
-    botMsg.innerHTML = `
-      <div class="chat-msg__avatar">🤖</div>
-      <div class="chat-msg__bubble">
-        Функция в разработке — GigaChat RAG ещё не подключён.
-        Пока воспользуйтесь <a href="/navigator/anketa/">анкетой</a>
-        или <a href="/consult/">запишитесь на консультацию</a>.
-      </div>`;
-    messages.appendChild(botMsg);
-    messages.scrollTop = messages.scrollHeight;
-  }, 600);
+  try {
+    const resp = await fetch('/api/ai/chat/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body: JSON.stringify({ message: text }),
+    });
+    const data = await resp.json();
 
-  messages.scrollTop = messages.scrollHeight;
+    if (data.error) {
+      addMessage('bot', '⚠ ' + data.error);
+    } else {
+      addMessage('bot', data.answer);
+    }
+  } catch (e) {
+    addMessage('bot', '⚠ Не удалось связаться с сервером. Попробуйте ещё раз.');
+  }
+
+  setLoading(false);
 }
+
+function addMessage(role, text) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `chat-msg chat-msg--${role === 'user' ? 'user' : 'bot'}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-msg__bubble';
+  bubble.style.whiteSpace = 'pre-wrap';
+  bubble.textContent = text;
+
+  if (role === 'bot') {
+    const avatar = document.createElement('div');
+    avatar.className = 'chat-msg__avatar';
+    avatar.textContent = '🤖';
+    div.appendChild(avatar);
+  }
+
+  div.appendChild(bubble);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('chat-send-btn');
+  const status = document.getElementById('chat-status');
+  btn.disabled = on;
+  btn.textContent = on ? '...' : 'Отправить';
+  status.textContent = on ? '⏳ GigaChat думает...' : '🟢 GigaChat подключён';
+
+  if (on) {
+    const container = document.getElementById('chat-messages');
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg chat-msg--bot';
+    typing.id = 'typing-indicator';
+    typing.innerHTML = '<div class="chat-msg__avatar">🤖</div><div class="chat-msg__bubble chat-msg__bubble--typing"><span></span><span></span><span></span></div>';
+    container.appendChild(typing);
+    container.scrollTop = container.scrollHeight;
+  } else {
+    document.getElementById('typing-indicator')?.remove();
+  }
+}
+
+async function clearHistory() {
+  await fetch('/api/ai/chat/clear/', { headers: { 'X-CSRFToken': CSRF } });
+  const container = document.getElementById('chat-messages');
+  // оставляем только первое приветственное сообщение
+  while (container.children.length > 1) container.removeChild(container.lastChild);
+}
+
+// Отправка по Ctrl+Enter
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) sendMessage();
+});
 </script>
+
+<style>
+.chat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 13px;
+}
+.chat-toolbar__status { color: var(--gray-600); }
+.chat-toolbar__clear {
+  background: none;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--gray-600);
+  transition: background .15s;
+}
+.chat-toolbar__clear:hover { background: var(--gray-100); }
+
+/* Анимация печатания */
+.chat-msg__bubble--typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 14px 16px;
+}
+.chat-msg__bubble--typing span {
+  width: 7px; height: 7px;
+  background: var(--gray-600);
+  border-radius: 50%;
+  animation: typing 1.2s infinite;
+}
+.chat-msg__bubble--typing span:nth-child(2) { animation-delay: .2s; }
+.chat-msg__bubble--typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+</style>
 {% endblock %}

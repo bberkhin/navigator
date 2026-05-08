@@ -1,4 +1,5 @@
 .env
+.env_prod
 __pycache__/
 *.pyc
 *.pyo
@@ -9,3 +10,5 @@ staticfiles/
 media/
 *.log
 .DS_Store
+.ssh/
+config/settings.py
