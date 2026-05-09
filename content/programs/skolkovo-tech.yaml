@@ -3,8 +3,8 @@ slug: skolkovo-tech
 admin_org: "Фонд «Сколково»"
 legal_basis: "Федеральный закон № 244-ФЗ «Об инновационном центре Сколково»"
 support_form: grant
-min_amount_mln: 5
-max_amount_mln: 150
+min_amount_mln: 2
+max_amount_mln: 149
 rate_percent: null
 term: "до 3 лет"
 okveds:
